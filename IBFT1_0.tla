@@ -77,7 +77,7 @@ Message == [type : {"PRE-PREPARE", "PREPARE", "COMMIT"},
 (* Ensures each process sends at most one message per (type, view) *)
 BoundedMessages ==
     /\ messages \subseteq Message
-    /\ \A p \in AllProcs :
+    /\ \A p \in Corr:
         \A m1, m2 \in messages :
             (m1.type = m2.type /\ m1.view_num = m2.view_num /\ m1.from = p /\ m2.from = p) => m1 = m2
 
