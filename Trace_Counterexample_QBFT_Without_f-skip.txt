@@ -1,0 +1,404 @@
+(*This trace demonstrates a violation of the HonestLeaderInFPlusOneBlocks invariant in a BFT consensus protocol that lacks the F-skip mechanism. The system is configured with four processes, one of which (process 1) is Byzantine (F=1), and the remaining three are correct. The invariant requires that in any sequence of F+1=2 consecutively committed blocks, at least one block must be proposed by a correct process. However, the trace shows that both block 1 and block 2 are successfully committed with process 1 as the leader. On height 1, the Byzantine process acts as the round-robin leader in view 1 and completes consensus normally. On height 2, correct processes time out in views 1–3 and eventually advance to view 4, where the leader function—due to the fixed round-robin schedule without F-skip—again assigns leadership to process 1 (Leader(2, 4) = 1). The Byzantine process then issues a valid PRE-PREPARE, enabling the honest replicas to complete the second consensus round. As a result, two consecutive blocks are proposed solely by a Byzantine replica, violating the requirement that an honest leader must appear within any window of F+1 blocks. This counterexample confirms that omitting F-skip undermines censorship resistance, allowing a single malicious participant to monopolize block proposal across a critical number of rounds.*)
+
+<<
+[
+ _TEAction |-> [
+   position |-> 1,
+   name |-> "Initial predicate",
+   location |-> "Unknown location"
+ ],
+ RCmessages |-> {},
+ blockLeader |-> <<-1, -1>>,
+ committedHeights |-> {},
+ currentHeight |-> 1,
+ decision |-> << (2 :> "None" @@ 3 :> "None" @@ 4 :> "None"),
+   (2 :> "None" @@ 3 :> "None" @@ 4 :> "None") >>,
+ messageCount |-> 1,
+ messages |-> {[type |-> "PRE-PREPARE", view_num |-> 1, cmd |-> "A", from |-> 1]},
+ processState |-> (2 :> [view_num |-> 1, inputValue |-> "A", pr |-> -1, pv |-> "None"] @@ 3 :> [view_num |-> 1, inputValue |-> "A", pr |-> -1, pv |-> "None"] @@ 4 :> [view_num |-> 1, inputValue |-> "A", pr |-> -1, pv |-> "None"])
+],
+[
+ _TEAction |-> [
+   position |-> 2,
+   name |-> "Steps",
+   location |-> "line 374, col 5 to line 377, col 28 of module Attack_For_No_F_Skip"
+ ],
+ RCmessages |-> {},
+ blockLeader |-> <<-1, -1>>,
+ committedHeights |-> {},
+ currentHeight |-> 1,
+ decision |-> << (2 :> "None" @@ 3 :> "None" @@ 4 :> "None"),
+   (2 :> "None" @@ 3 :> "None" @@ 4 :> "None") >>,
+ messageCount |-> 2,
+ messages |-> {[type |-> "PRE-PREPARE", view_num |-> 1, cmd |-> "A", from |-> 1], [type |-> "PREPARE", view_num |-> 1, cmd |-> "A", from |-> 2]},
+ processState |-> (2 :> [view_num |-> 1, inputValue |-> "A", pr |-> -1, pv |-> "None"] @@ 3 :> [view_num |-> 1, inputValue |-> "A", pr |-> -1, pv |-> "None"] @@ 4 :> [view_num |-> 1, inputValue |-> "A", pr |-> -1, pv |-> "None"])
+],
+[
+ _TEAction |-> [
+   position |-> 3,
+   name |-> "Steps",
+   location |-> "line 374, col 5 to line 377, col 28 of module Attack_For_No_F_Skip"
+ ],
+ RCmessages |-> {},
+ blockLeader |-> <<-1, -1>>,
+ committedHeights |-> {},
+ currentHeight |-> 1,
+ decision |-> << (2 :> "None" @@ 3 :> "None" @@ 4 :> "None"),
+   (2 :> "None" @@ 3 :> "None" @@ 4 :> "None") >>,
+ messageCount |-> 3,
+ messages |-> {[type |-> "PRE-PREPARE", view_num |-> 1, cmd |-> "A", from |-> 1], [type |-> "PREPARE", view_num |-> 1, cmd |-> "A", from |-> 2], [type |-> "PREPARE", view_num |-> 1, cmd |-> "A", from |-> 3]},
+ processState |-> (2 :> [view_num |-> 1, inputValue |-> "A", pr |-> -1, pv |-> "None"] @@ 3 :> [view_num |-> 1, inputValue |-> "A", pr |-> -1, pv |-> "None"] @@ 4 :> [view_num |-> 1, inputValue |-> "A", pr |-> -1, pv |-> "None"])
+],
+[
+ _TEAction |-> [
+   position |-> 4,
+   name |-> "Steps",
+   location |-> "line 374, col 5 to line 377, col 28 of module Attack_For_No_F_Skip"
+ ],
+ RCmessages |-> {},
+ blockLeader |-> <<-1, -1>>,
+ committedHeights |-> {},
+ currentHeight |-> 1,
+ decision |-> << (2 :> "None" @@ 3 :> "None" @@ 4 :> "None"),
+   (2 :> "None" @@ 3 :> "None" @@ 4 :> "None") >>,
+ messageCount |-> 4,
+ messages |-> {[type |-> "PRE-PREPARE", view_num |-> 1, cmd |-> "A", from |-> 1], [type |-> "PREPARE", view_num |-> 1, cmd |-> "A", from |-> 2], [type |-> "PREPARE", view_num |-> 1, cmd |-> "A", from |-> 3], [type |-> "PREPARE", view_num |-> 1, cmd |-> "A", from |-> 4]},
+ processState |-> (2 :> [view_num |-> 1, inputValue |-> "A", pr |-> -1, pv |-> "None"] @@ 3 :> [view_num |-> 1, inputValue |-> "A", pr |-> -1, pv |-> "None"] @@ 4 :> [view_num |-> 1, inputValue |-> "A", pr |-> -1, pv |-> "None"])
+],
+[
+ _TEAction |-> [
+   position |-> 5,
+   name |-> "Steps",
+   location |-> "line 374, col 5 to line 377, col 28 of module Attack_For_No_F_Skip"
+ ],
+ RCmessages |-> {},
+ blockLeader |-> <<-1, -1>>,
+ committedHeights |-> {},
+ currentHeight |-> 1,
+ decision |-> << (2 :> "None" @@ 3 :> "None" @@ 4 :> "None"),
+   (2 :> "None" @@ 3 :> "None" @@ 4 :> "None") >>,
+ messageCount |-> 5,
+ messages |-> {[type |-> "PRE-PREPARE", view_num |-> 1, cmd |-> "A", from |-> 1], [type |-> "PREPARE", view_num |-> 1, cmd |-> "A", from |-> 2], [type |-> "PREPARE", view_num |-> 1, cmd |-> "A", from |-> 3], [type |-> "PREPARE", view_num |-> 1, cmd |-> "A", from |-> 4], [type |-> "COMMIT", view_num |-> 1, cmd |-> "A", from |-> 2]},
+ processState |-> (2 :> [view_num |-> 1, inputValue |-> "A", pr |-> 1, pv |-> "A"] @@ 3 :> [view_num |-> 1, inputValue |-> "A", pr |-> -1, pv |-> "None"] @@ 4 :> [view_num |-> 1, inputValue |-> "A", pr |-> -1, pv |-> "None"])
+],
+[
+ _TEAction |-> [
+   position |-> 6,
+   name |-> "Steps",
+   location |-> "line 374, col 5 to line 377, col 28 of module Attack_For_No_F_Skip"
+ ],
+ RCmessages |-> {},
+ blockLeader |-> <<-1, -1>>,
+ committedHeights |-> {},
+ currentHeight |-> 1,
+ decision |-> << (2 :> "None" @@ 3 :> "None" @@ 4 :> "None"),
+   (2 :> "None" @@ 3 :> "None" @@ 4 :> "None") >>,
+ messageCount |-> 6,
+ messages |-> {[type |-> "PRE-PREPARE", view_num |-> 1, cmd |-> "A", from |-> 1], [type |-> "PREPARE", view_num |-> 1, cmd |-> "A", from |-> 2], [type |-> "PREPARE", view_num |-> 1, cmd |-> "A", from |-> 3], [type |-> "PREPARE", view_num |-> 1, cmd |-> "A", from |-> 4], [type |-> "COMMIT", view_num |-> 1, cmd |-> "A", from |-> 2], [type |-> "COMMIT", view_num |-> 1, cmd |-> "A", from |-> 3]},
+ processState |-> (2 :> [view_num |-> 1, inputValue |-> "A", pr |-> 1, pv |-> "A"] @@ 3 :> [view_num |-> 1, inputValue |-> "A", pr |-> 1, pv |-> "A"] @@ 4 :> [view_num |-> 1, inputValue |-> "A", pr |-> -1, pv |-> "None"])
+],
+[
+ _TEAction |-> [
+   position |-> 7,
+   name |-> "Steps",
+   location |-> "line 374, col 5 to line 377, col 28 of module Attack_For_No_F_Skip"
+ ],
+ RCmessages |-> {},
+ blockLeader |-> <<-1, -1>>,
+ committedHeights |-> {},
+ currentHeight |-> 1,
+ decision |-> << (2 :> "None" @@ 3 :> "None" @@ 4 :> "None"),
+   (2 :> "None" @@ 3 :> "None" @@ 4 :> "None") >>,
+ messageCount |-> 7,
+ messages |-> {[type |-> "PRE-PREPARE", view_num |-> 1, cmd |-> "A", from |-> 1], [type |-> "PREPARE", view_num |-> 1, cmd |-> "A", from |-> 2], [type |-> "PREPARE", view_num |-> 1, cmd |-> "A", from |-> 3], [type |-> "PREPARE", view_num |-> 1, cmd |-> "A", from |-> 4], [type |-> "COMMIT", view_num |-> 1, cmd |-> "A", from |-> 2], [type |-> "COMMIT", view_num |-> 1, cmd |-> "A", from |-> 3], [type |-> "COMMIT", view_num |-> 1, cmd |-> "A", from |-> 4]},
+ processState |-> (2 :> [view_num |-> 1, inputValue |-> "A", pr |-> 1, pv |-> "A"] @@ 3 :> [view_num |-> 1, inputValue |-> "A", pr |-> 1, pv |-> "A"] @@ 4 :> [view_num |-> 1, inputValue |-> "A", pr |-> 1, pv |-> "A"])
+],
+[
+ _TEAction |-> [
+   position |-> 8,
+   name |-> "Steps",
+   location |-> "line 374, col 5 to line 377, col 28 of module Attack_For_No_F_Skip"
+ ],
+ RCmessages |-> {},
+ blockLeader |-> <<1, -1>>,
+ committedHeights |-> {1},
+ currentHeight |-> 2,
+ decision |-> << (2 :> "A" @@ 3 :> "None" @@ 4 :> "None"),
+   (2 :> "None" @@ 3 :> "None" @@ 4 :> "None") >>,
+ messageCount |-> 8,
+ messages |-> {},
+ processState |-> (2 :> [view_num |-> 1, inputValue |-> "A", pr |-> -1, pv |-> "None"] @@ 3 :> [view_num |-> 1, inputValue |-> "A", pr |-> -1, pv |-> "None"] @@ 4 :> [view_num |-> 1, inputValue |-> "A", pr |-> -1, pv |-> "None"])
+],
+[
+ _TEAction |-> [
+   position |-> 9,
+   name |-> "Steps",
+   location |-> "line 374, col 5 to line 377, col 28 of module Attack_For_No_F_Skip"
+ ],
+ RCmessages |-> {[type |-> "ROUND-CHANGE", view_num |-> 2, from |-> 2, pr |-> -1, pv |-> "None"]},
+ blockLeader |-> <<1, -1>>,
+ committedHeights |-> {1},
+ currentHeight |-> 2,
+ decision |-> << (2 :> "A" @@ 3 :> "None" @@ 4 :> "None"),
+   (2 :> "None" @@ 3 :> "None" @@ 4 :> "None") >>,
+ messageCount |-> 9,
+ messages |-> {},
+ processState |-> (2 :> [view_num |-> 2, inputValue |-> "A", pr |-> -1, pv |-> "None"] @@ 3 :> [view_num |-> 1, inputValue |-> "A", pr |-> -1, pv |-> "None"] @@ 4 :> [view_num |-> 1, inputValue |-> "A", pr |-> -1, pv |-> "None"])
+],
+[
+ _TEAction |-> [
+   position |-> 10,
+   name |-> "Steps",
+   location |-> "line 374, col 5 to line 377, col 28 of module Attack_For_No_F_Skip"
+ ],
+ RCmessages |-> {[type |-> "ROUND-CHANGE", view_num |-> 2, from |-> 2, pr |-> -1, pv |-> "None"]},
+ blockLeader |-> <<1, -1>>,
+ committedHeights |-> {1},
+ currentHeight |-> 2,
+ decision |-> << (2 :> "A" @@ 3 :> "None" @@ 4 :> "None"),
+   (2 :> "None" @@ 3 :> "None" @@ 4 :> "None") >>,
+ messageCount |-> 10,
+ messages |-> {[type |-> "PRE-PREPARE", view_num |-> 4, cmd |-> "A", from |-> 1]},
+ processState |-> (2 :> [view_num |-> 2, inputValue |-> "A", pr |-> -1, pv |-> "None"] @@ 3 :> [view_num |-> 1, inputValue |-> "A", pr |-> -1, pv |-> "None"] @@ 4 :> [view_num |-> 1, inputValue |-> "A", pr |-> -1, pv |-> "None"])
+],
+[
+ _TEAction |-> [
+   position |-> 11,
+   name |-> "Steps",
+   location |-> "line 374, col 5 to line 377, col 28 of module Attack_For_No_F_Skip"
+ ],
+ RCmessages |-> {[type |-> "ROUND-CHANGE", view_num |-> 2, from |-> 2, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 2, from |-> 3, pr |-> -1, pv |-> "None"]},
+ blockLeader |-> <<1, -1>>,
+ committedHeights |-> {1},
+ currentHeight |-> 2,
+ decision |-> << (2 :> "A" @@ 3 :> "None" @@ 4 :> "None"),
+   (2 :> "None" @@ 3 :> "None" @@ 4 :> "None") >>,
+ messageCount |-> 11,
+ messages |-> {[type |-> "PRE-PREPARE", view_num |-> 4, cmd |-> "A", from |-> 1]},
+ processState |-> (2 :> [view_num |-> 2, inputValue |-> "A", pr |-> -1, pv |-> "None"] @@ 3 :> [view_num |-> 2, inputValue |-> "A", pr |-> -1, pv |-> "None"] @@ 4 :> [view_num |-> 1, inputValue |-> "A", pr |-> -1, pv |-> "None"])
+],
+[
+ _TEAction |-> [
+   position |-> 12,
+   name |-> "Steps",
+   location |-> "line 374, col 5 to line 377, col 28 of module Attack_For_No_F_Skip"
+ ],
+ RCmessages |-> {[type |-> "ROUND-CHANGE", view_num |-> 2, from |-> 2, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 2, from |-> 3, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 3, from |-> 3, pr |-> -1, pv |-> "None"]},
+ blockLeader |-> <<1, -1>>,
+ committedHeights |-> {1},
+ currentHeight |-> 2,
+ decision |-> << (2 :> "A" @@ 3 :> "None" @@ 4 :> "None"),
+   (2 :> "None" @@ 3 :> "None" @@ 4 :> "None") >>,
+ messageCount |-> 12,
+ messages |-> {[type |-> "PRE-PREPARE", view_num |-> 4, cmd |-> "A", from |-> 1]},
+ processState |-> (2 :> [view_num |-> 2, inputValue |-> "A", pr |-> -1, pv |-> "None"] @@ 3 :> [view_num |-> 3, inputValue |-> "A", pr |-> -1, pv |-> "None"] @@ 4 :> [view_num |-> 1, inputValue |-> "A", pr |-> -1, pv |-> "None"])
+],
+[
+ _TEAction |-> [
+   position |-> 13,
+   name |-> "Steps",
+   location |-> "line 374, col 5 to line 377, col 28 of module Attack_For_No_F_Skip"
+ ],
+ RCmessages |-> {[type |-> "ROUND-CHANGE", view_num |-> 2, from |-> 2, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 2, from |-> 3, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 3, from |-> 2, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 3, from |-> 3, pr |-> -1, pv |-> "None"]},
+ blockLeader |-> <<1, -1>>,
+ committedHeights |-> {1},
+ currentHeight |-> 2,
+ decision |-> << (2 :> "A" @@ 3 :> "None" @@ 4 :> "None"),
+   (2 :> "None" @@ 3 :> "None" @@ 4 :> "None") >>,
+ messageCount |-> 13,
+ messages |-> {[type |-> "PRE-PREPARE", view_num |-> 4, cmd |-> "A", from |-> 1]},
+ processState |-> (2 :> [view_num |-> 3, inputValue |-> "A", pr |-> -1, pv |-> "None"] @@ 3 :> [view_num |-> 3, inputValue |-> "A", pr |-> -1, pv |-> "None"] @@ 4 :> [view_num |-> 1, inputValue |-> "A", pr |-> -1, pv |-> "None"])
+],
+[
+ _TEAction |-> [
+   position |-> 14,
+   name |-> "Steps",
+   location |-> "line 374, col 5 to line 377, col 28 of module Attack_For_No_F_Skip"
+ ],
+ RCmessages |-> {[type |-> "ROUND-CHANGE", view_num |-> 2, from |-> 2, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 2, from |-> 3, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 3, from |-> 2, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 3, from |-> 3, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 4, from |-> 2, pr |-> -1, pv |-> "None"]},
+ blockLeader |-> <<1, -1>>,
+ committedHeights |-> {1},
+ currentHeight |-> 2,
+ decision |-> << (2 :> "A" @@ 3 :> "None" @@ 4 :> "None"),
+   (2 :> "None" @@ 3 :> "None" @@ 4 :> "None") >>,
+ messageCount |-> 14,
+ messages |-> {[type |-> "PRE-PREPARE", view_num |-> 4, cmd |-> "A", from |-> 1]},
+ processState |-> (2 :> [view_num |-> 4, inputValue |-> "A", pr |-> -1, pv |-> "None"] @@ 3 :> [view_num |-> 3, inputValue |-> "A", pr |-> -1, pv |-> "None"] @@ 4 :> [view_num |-> 1, inputValue |-> "A", pr |-> -1, pv |-> "None"])
+],
+[
+ _TEAction |-> [
+   position |-> 15,
+   name |-> "Steps",
+   location |-> "line 374, col 5 to line 377, col 28 of module Attack_For_No_F_Skip"
+ ],
+ RCmessages |-> {[type |-> "ROUND-CHANGE", view_num |-> 2, from |-> 2, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 2, from |-> 3, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 3, from |-> 2, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 3, from |-> 3, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 4, from |-> 2, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 4, from |-> 3, pr |-> -1, pv |-> "None"]},
+ blockLeader |-> <<1, -1>>,
+ committedHeights |-> {1},
+ currentHeight |-> 2,
+ decision |-> << (2 :> "A" @@ 3 :> "None" @@ 4 :> "None"),
+   (2 :> "None" @@ 3 :> "None" @@ 4 :> "None") >>,
+ messageCount |-> 15,
+ messages |-> {[type |-> "PRE-PREPARE", view_num |-> 4, cmd |-> "A", from |-> 1]},
+ processState |-> (2 :> [view_num |-> 4, inputValue |-> "A", pr |-> -1, pv |-> "None"] @@ 3 :> [view_num |-> 4, inputValue |-> "A", pr |-> -1, pv |-> "None"] @@ 4 :> [view_num |-> 1, inputValue |-> "A", pr |-> -1, pv |-> "None"])
+],
+[
+ _TEAction |-> [
+   position |-> 16,
+   name |-> "Steps",
+   location |-> "line 374, col 5 to line 377, col 28 of module Attack_For_No_F_Skip"
+ ],
+ RCmessages |-> {[type |-> "ROUND-CHANGE", view_num |-> 2, from |-> 2, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 2, from |-> 3, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 2, from |-> 4, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 3, from |-> 2, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 3, from |-> 3, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 4, from |-> 2, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 4, from |-> 3, pr |-> -1, pv |-> "None"]},
+ blockLeader |-> <<1, -1>>,
+ committedHeights |-> {1},
+ currentHeight |-> 2,
+ decision |-> << (2 :> "A" @@ 3 :> "None" @@ 4 :> "None"),
+   (2 :> "None" @@ 3 :> "None" @@ 4 :> "None") >>,
+ messageCount |-> 16,
+ messages |-> {[type |-> "PRE-PREPARE", view_num |-> 4, cmd |-> "A", from |-> 1]},
+ processState |-> (2 :> [view_num |-> 4, inputValue |-> "A", pr |-> -1, pv |-> "None"] @@ 3 :> [view_num |-> 4, inputValue |-> "A", pr |-> -1, pv |-> "None"] @@ 4 :> [view_num |-> 2, inputValue |-> "A", pr |-> -1, pv |-> "None"])
+],
+[
+ _TEAction |-> [
+   position |-> 17,
+   name |-> "Steps",
+   location |-> "line 374, col 5 to line 377, col 28 of module Attack_For_No_F_Skip"
+ ],
+ RCmessages |-> {[type |-> "ROUND-CHANGE", view_num |-> 2, from |-> 2, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 2, from |-> 3, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 2, from |-> 4, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 3, from |-> 2, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 3, from |-> 3, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 3, from |-> 4, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 4, from |-> 2, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 4, from |-> 3, pr |-> -1, pv |-> "None"]},
+ blockLeader |-> <<1, -1>>,
+ committedHeights |-> {1},
+ currentHeight |-> 2,
+ decision |-> << (2 :> "A" @@ 3 :> "None" @@ 4 :> "None"),
+   (2 :> "None" @@ 3 :> "None" @@ 4 :> "None") >>,
+ messageCount |-> 17,
+ messages |-> {[type |-> "PRE-PREPARE", view_num |-> 4, cmd |-> "A", from |-> 1]},
+ processState |-> (2 :> [view_num |-> 4, inputValue |-> "A", pr |-> -1, pv |-> "None"] @@ 3 :> [view_num |-> 4, inputValue |-> "A", pr |-> -1, pv |-> "None"] @@ 4 :> [view_num |-> 3, inputValue |-> "A", pr |-> -1, pv |-> "None"])
+],
+[
+ _TEAction |-> [
+   position |-> 18,
+   name |-> "Steps",
+   location |-> "line 374, col 5 to line 377, col 28 of module Attack_For_No_F_Skip"
+ ],
+ RCmessages |-> {[type |-> "ROUND-CHANGE", view_num |-> 2, from |-> 2, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 2, from |-> 3, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 2, from |-> 4, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 3, from |-> 2, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 3, from |-> 3, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 3, from |-> 4, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 4, from |-> 2, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 4, from |-> 3, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 4, from |-> 4, pr |-> -1, pv |-> "None"]},
+ blockLeader |-> <<1, -1>>,
+ committedHeights |-> {1},
+ currentHeight |-> 2,
+ decision |-> << (2 :> "A" @@ 3 :> "None" @@ 4 :> "None"),
+   (2 :> "None" @@ 3 :> "None" @@ 4 :> "None") >>,
+ messageCount |-> 18,
+ messages |-> {[type |-> "PRE-PREPARE", view_num |-> 4, cmd |-> "A", from |-> 1]},
+ processState |-> (2 :> [view_num |-> 4, inputValue |-> "A", pr |-> -1, pv |-> "None"] @@ 3 :> [view_num |-> 4, inputValue |-> "A", pr |-> -1, pv |-> "None"] @@ 4 :> [view_num |-> 4, inputValue |-> "A", pr |-> -1, pv |-> "None"])
+],
+[
+ _TEAction |-> [
+   position |-> 19,
+   name |-> "Steps",
+   location |-> "line 374, col 5 to line 377, col 28 of module Attack_For_No_F_Skip"
+ ],
+ RCmessages |-> {[type |-> "ROUND-CHANGE", view_num |-> 2, from |-> 2, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 2, from |-> 3, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 2, from |-> 4, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 3, from |-> 2, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 3, from |-> 3, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 3, from |-> 4, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 4, from |-> 2, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 4, from |-> 3, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 4, from |-> 4, pr |-> -1, pv |-> "None"]},
+ blockLeader |-> <<1, -1>>,
+ committedHeights |-> {1},
+ currentHeight |-> 2,
+ decision |-> << (2 :> "A" @@ 3 :> "None" @@ 4 :> "None"),
+   (2 :> "None" @@ 3 :> "None" @@ 4 :> "None") >>,
+ messageCount |-> 19,
+ messages |-> {[type |-> "PRE-PREPARE", view_num |-> 4, cmd |-> "A", from |-> 1], [type |-> "PREPARE", view_num |-> 4, cmd |-> "A", from |-> 3]},
+ processState |-> (2 :> [view_num |-> 4, inputValue |-> "A", pr |-> -1, pv |-> "None"] @@ 3 :> [view_num |-> 4, inputValue |-> "A", pr |-> -1, pv |-> "None"] @@ 4 :> [view_num |-> 4, inputValue |-> "A", pr |-> -1, pv |-> "None"])
+],
+[
+ _TEAction |-> [
+   position |-> 20,
+   name |-> "Steps",
+   location |-> "line 374, col 5 to line 377, col 28 of module Attack_For_No_F_Skip"
+ ],
+ RCmessages |-> {[type |-> "ROUND-CHANGE", view_num |-> 2, from |-> 2, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 2, from |-> 3, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 2, from |-> 4, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 3, from |-> 2, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 3, from |-> 3, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 3, from |-> 4, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 4, from |-> 2, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 4, from |-> 3, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 4, from |-> 4, pr |-> -1, pv |-> "None"]},
+ blockLeader |-> <<1, -1>>,
+ committedHeights |-> {1},
+ currentHeight |-> 2,
+ decision |-> << (2 :> "A" @@ 3 :> "None" @@ 4 :> "None"),
+   (2 :> "None" @@ 3 :> "None" @@ 4 :> "None") >>,
+ messageCount |-> 20,
+ messages |-> {[type |-> "PRE-PREPARE", view_num |-> 4, cmd |-> "A", from |-> 1], [type |-> "PREPARE", view_num |-> 4, cmd |-> "A", from |-> 2], [type |-> "PREPARE", view_num |-> 4, cmd |-> "A", from |-> 3]},
+ processState |-> (2 :> [view_num |-> 4, inputValue |-> "A", pr |-> -1, pv |-> "None"] @@ 3 :> [view_num |-> 4, inputValue |-> "A", pr |-> -1, pv |-> "None"] @@ 4 :> [view_num |-> 4, inputValue |-> "A", pr |-> -1, pv |-> "None"])
+],
+[
+ _TEAction |-> [
+   position |-> 21,
+   name |-> "Steps",
+   location |-> "line 374, col 5 to line 377, col 28 of module Attack_For_No_F_Skip"
+ ],
+ RCmessages |-> {[type |-> "ROUND-CHANGE", view_num |-> 2, from |-> 2, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 2, from |-> 3, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 2, from |-> 4, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 3, from |-> 2, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 3, from |-> 3, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 3, from |-> 4, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 4, from |-> 2, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 4, from |-> 3, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 4, from |-> 4, pr |-> -1, pv |-> "None"]},
+ blockLeader |-> <<1, -1>>,
+ committedHeights |-> {1},
+ currentHeight |-> 2,
+ decision |-> << (2 :> "A" @@ 3 :> "None" @@ 4 :> "None"),
+   (2 :> "None" @@ 3 :> "None" @@ 4 :> "None") >>,
+ messageCount |-> 21,
+ messages |-> {[type |-> "PRE-PREPARE", view_num |-> 4, cmd |-> "A", from |-> 1], [type |-> "PREPARE", view_num |-> 4, cmd |-> "A", from |-> 2], [type |-> "PREPARE", view_num |-> 4, cmd |-> "A", from |-> 3], [type |-> "PREPARE", view_num |-> 4, cmd |-> "A", from |-> 4]},
+ processState |-> (2 :> [view_num |-> 4, inputValue |-> "A", pr |-> -1, pv |-> "None"] @@ 3 :> [view_num |-> 4, inputValue |-> "A", pr |-> -1, pv |-> "None"] @@ 4 :> [view_num |-> 4, inputValue |-> "A", pr |-> -1, pv |-> "None"])
+],
+[
+ _TEAction |-> [
+   position |-> 22,
+   name |-> "Steps",
+   location |-> "line 374, col 5 to line 377, col 28 of module Attack_For_No_F_Skip"
+ ],
+ RCmessages |-> {[type |-> "ROUND-CHANGE", view_num |-> 2, from |-> 2, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 2, from |-> 3, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 2, from |-> 4, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 3, from |-> 2, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 3, from |-> 3, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 3, from |-> 4, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 4, from |-> 2, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 4, from |-> 3, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 4, from |-> 4, pr |-> -1, pv |-> "None"]},
+ blockLeader |-> <<1, -1>>,
+ committedHeights |-> {1},
+ currentHeight |-> 2,
+ decision |-> << (2 :> "A" @@ 3 :> "None" @@ 4 :> "None"),
+   (2 :> "None" @@ 3 :> "None" @@ 4 :> "None") >>,
+ messageCount |-> 22,
+ messages |-> {[type |-> "PRE-PREPARE", view_num |-> 4, cmd |-> "A", from |-> 1], [type |-> "PREPARE", view_num |-> 4, cmd |-> "A", from |-> 2], [type |-> "PREPARE", view_num |-> 4, cmd |-> "A", from |-> 3], [type |-> "PREPARE", view_num |-> 4, cmd |-> "A", from |-> 4], [type |-> "COMMIT", view_num |-> 4, cmd |-> "A", from |-> 2]},
+ processState |-> (2 :> [view_num |-> 4, inputValue |-> "A", pr |-> 4, pv |-> "A"] @@ 3 :> [view_num |-> 4, inputValue |-> "A", pr |-> -1, pv |-> "None"] @@ 4 :> [view_num |-> 4, inputValue |-> "A", pr |-> -1, pv |-> "None"])
+],
+[
+ _TEAction |-> [
+   position |-> 23,
+   name |-> "Steps",
+   location |-> "line 374, col 5 to line 377, col 28 of module Attack_For_No_F_Skip"
+ ],
+ RCmessages |-> {[type |-> "ROUND-CHANGE", view_num |-> 2, from |-> 2, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 2, from |-> 3, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 2, from |-> 4, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 3, from |-> 2, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 3, from |-> 3, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 3, from |-> 4, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 4, from |-> 2, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 4, from |-> 3, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 4, from |-> 4, pr |-> -1, pv |-> "None"]},
+ blockLeader |-> <<1, -1>>,
+ committedHeights |-> {1},
+ currentHeight |-> 2,
+ decision |-> << (2 :> "A" @@ 3 :> "None" @@ 4 :> "None"),
+   (2 :> "None" @@ 3 :> "None" @@ 4 :> "None") >>,
+ messageCount |-> 23,
+ messages |-> {[type |-> "PRE-PREPARE", view_num |-> 4, cmd |-> "A", from |-> 1], [type |-> "PREPARE", view_num |-> 4, cmd |-> "A", from |-> 2], [type |-> "PREPARE", view_num |-> 4, cmd |-> "A", from |-> 3], [type |-> "PREPARE", view_num |-> 4, cmd |-> "A", from |-> 4], [type |-> "COMMIT", view_num |-> 4, cmd |-> "A", from |-> 2], [type |-> "COMMIT", view_num |-> 4, cmd |-> "A", from |-> 3]},
+ processState |-> (2 :> [view_num |-> 4, inputValue |-> "A", pr |-> 4, pv |-> "A"] @@ 3 :> [view_num |-> 4, inputValue |-> "A", pr |-> 4, pv |-> "A"] @@ 4 :> [view_num |-> 4, inputValue |-> "A", pr |-> -1, pv |-> "None"])
+],
+[
+ _TEAction |-> [
+   position |-> 24,
+   name |-> "Steps",
+   location |-> "line 374, col 5 to line 377, col 28 of module Attack_For_No_F_Skip"
+ ],
+ RCmessages |-> {[type |-> "ROUND-CHANGE", view_num |-> 2, from |-> 2, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 2, from |-> 3, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 2, from |-> 4, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 3, from |-> 2, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 3, from |-> 3, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 3, from |-> 4, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 4, from |-> 2, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 4, from |-> 3, pr |-> -1, pv |-> "None"], [type |-> "ROUND-CHANGE", view_num |-> 4, from |-> 4, pr |-> -1, pv |-> "None"]},
+ blockLeader |-> <<1, -1>>,
+ committedHeights |-> {1},
+ currentHeight |-> 2,
+ decision |-> << (2 :> "A" @@ 3 :> "None" @@ 4 :> "None"),
+   (2 :> "None" @@ 3 :> "None" @@ 4 :> "None") >>,
+ messageCount |-> 24,
+ messages |-> {[type |-> "PRE-PREPARE", view_num |-> 4, cmd |-> "A", from |-> 1], [type |-> "PREPARE", view_num |-> 4, cmd |-> "A", from |-> 2], [type |-> "PREPARE", view_num |-> 4, cmd |-> "A", from |-> 3], [type |-> "PREPARE", view_num |-> 4, cmd |-> "A", from |-> 4], [type |-> "COMMIT", view_num |-> 4, cmd |-> "A", from |-> 2], [type |-> "COMMIT", view_num |-> 4, cmd |-> "A", from |-> 3], [type |-> "COMMIT", view_num |-> 4, cmd |-> "A", from |-> 4]},
+ processState |-> (2 :> [view_num |-> 4, inputValue |-> "A", pr |-> 4, pv |-> "A"] @@ 3 :> [view_num |-> 4, inputValue |-> "A", pr |-> 4, pv |-> "A"] @@ 4 :> [view_num |-> 4, inputValue |-> "A", pr |-> 4, pv |-> "A"])
+],
+[
+ _TEAction |-> [
+   position |-> 25,
+   name |-> "Steps",
+   location |-> "line 374, col 5 to line 377, col 28 of module Attack_For_No_F_Skip"
+ ],
+ RCmessages |-> {},
+ blockLeader |-> <<1, 1>>,
+ committedHeights |-> {1, 2},
+ currentHeight |-> 3,
+ decision |-> << (2 :> "A" @@ 3 :> "None" @@ 4 :> "None"),
+   (2 :> "A" @@ 3 :> "None" @@ 4 :> "None") >>,
+ messageCount |-> 25,
+ messages |-> {},
+ processState |-> (2 :> [view_num |-> 1, inputValue |-> "A", pr |-> -1, pv |-> "None"] @@ 3 :> [view_num |-> 1, inputValue |-> "A", pr |-> -1, pv |-> "None"] @@ 4 :> [view_num |-> 1, inputValue |-> "A", pr |-> -1, pv |-> "None"])
+]
+>>
