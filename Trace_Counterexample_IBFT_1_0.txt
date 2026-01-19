@@ -1,0 +1,207 @@
+(*This trace demonstrates a violation of the Agreement safety property in IBFT 1.0, revealing a critical vulnerability that allows correct processes to decide on different values for the same consensus instance. The system consists of four processes, with process 1 being Byzantine and processes 2, 3, and 4 honest. The attack begins when the Byzantine leader (process 1) equivocates by broadcasting two conflicting PRE-PREPARE messages in view 1—one proposing value "A" and another proposing value "B". A subset of correct processes (2, 3, and 4) initially follow the "A" proposal, collecting enough PREPARE and COMMIT messages to form a quorum for "A". Meanwhile, due to timeouts or lack of progress on "A", some correct processes (notably process 2) advance to view 2, where process 2—now acting as the round-robin leader—proposes "B" (possibly influenced by having seen the Byzantine "B" message or by default input). This second proposal gathers its own quorum of PREPARE and COMMIT messages from the same set of correct processes. Crucially, because IBFT 1.0 lacks view-change certificate validation strong enough to prevent acceptance of conflicting prepared values, the system permits two disjoint quorums to form around different values across views. As a result, process 3 decides "A" while process 2 decides "B" for the same height, directly violating the Agreement property which requires all correct processes to agree on a single value. This trace confirms that IBFT 1.0 is susceptible to equivocation-based attacks that break consensus safety, a flaw later addressed in QBFT through stricter locking rules and justification requirements during view changes.*)
+
+
+
+
+<<
+[
+ _TEAction |-> [
+   position |-> 1,
+   name |-> "Initial predicate",
+   location |-> "Unknown location"
+ ],
+ decision |-> (2 :> "None" @@ 3 :> "None" @@ 4 :> "None"),
+ messages |-> {},
+ processState |-> <<[view_num |-> 1], [view_num |-> 1], [view_num |-> 1], [view_num |-> 1]>>
+],
+[
+ _TEAction |-> [
+   position |-> 2,
+   name |-> "Steps",
+   location |-> "line 166, col 5 to line 172, col 28 of module IBFT1_0"
+ ],
+ decision |-> (2 :> "None" @@ 3 :> "None" @@ 4 :> "None"),
+ messages |-> {[type |-> "PRE-PREPARE", view_num |-> 1, cmd |-> "A", from |-> 1], [type |-> "PRE-PREPARE", view_num |-> 1, cmd |-> "B", from |-> 1]},
+ processState |-> <<[view_num |-> 1], [view_num |-> 1], [view_num |-> 1], [view_num |-> 1]>>
+],
+[
+ _TEAction |-> [
+   position |-> 3,
+   name |-> "Steps",
+   location |-> "line 166, col 5 to line 172, col 28 of module IBFT1_0"
+ ],
+ decision |-> (2 :> "None" @@ 3 :> "None" @@ 4 :> "None"),
+ messages |-> {[type |-> "PRE-PREPARE", view_num |-> 1, cmd |-> "A", from |-> 1], [type |-> "PRE-PREPARE", view_num |-> 1, cmd |-> "B", from |-> 1], [type |-> "PREPARE", view_num |-> 1, cmd |-> "A", from |-> 3]},
+ processState |-> <<[view_num |-> 1], [view_num |-> 1], [view_num |-> 1], [view_num |-> 1]>>
+],
+[
+ _TEAction |-> [
+   position |-> 4,
+   name |-> "Steps",
+   location |-> "line 166, col 5 to line 172, col 28 of module IBFT1_0"
+ ],
+ decision |-> (2 :> "None" @@ 3 :> "None" @@ 4 :> "None"),
+ messages |-> {[type |-> "PRE-PREPARE", view_num |-> 1, cmd |-> "A", from |-> 1], [type |-> "PRE-PREPARE", view_num |-> 1, cmd |-> "B", from |-> 1], [type |-> "PREPARE", view_num |-> 1, cmd |-> "A", from |-> 2], [type |-> "PREPARE", view_num |-> 1, cmd |-> "A", from |-> 3]},
+ processState |-> <<[view_num |-> 1], [view_num |-> 1], [view_num |-> 1], [view_num |-> 1]>>
+],
+[
+ _TEAction |-> [
+   position |-> 5,
+   name |-> "Steps",
+   location |-> "line 166, col 5 to line 172, col 28 of module IBFT1_0"
+ ],
+ decision |-> (2 :> "None" @@ 3 :> "None" @@ 4 :> "None"),
+ messages |-> {[type |-> "PRE-PREPARE", view_num |-> 1, cmd |-> "A", from |-> 1], [type |-> "PRE-PREPARE", view_num |-> 1, cmd |-> "B", from |-> 1], [type |-> "PREPARE", view_num |-> 1, cmd |-> "A", from |-> 2], [type |-> "PREPARE", view_num |-> 1, cmd |-> "A", from |-> 3]},
+ processState |-> <<[view_num |-> 1], [view_num |-> 2], [view_num |-> 1], [view_num |-> 1]>>
+],
+[
+ _TEAction |-> [
+   position |-> 6,
+   name |-> "Steps",
+   location |-> "line 166, col 5 to line 172, col 28 of module IBFT1_0"
+ ],
+ decision |-> (2 :> "None" @@ 3 :> "None" @@ 4 :> "None"),
+ messages |-> {[type |-> "PRE-PREPARE", view_num |-> 1, cmd |-> "A", from |-> 1], [type |-> "PRE-PREPARE", view_num |-> 1, cmd |-> "B", from |-> 1], [type |-> "PRE-PREPARE", view_num |-> 2, cmd |-> "B", from |-> 2], [type |-> "PREPARE", view_num |-> 1, cmd |-> "A", from |-> 2], [type |-> "PREPARE", view_num |-> 1, cmd |-> "A", from |-> 3]},
+ processState |-> <<[view_num |-> 1], [view_num |-> 2], [view_num |-> 1], [view_num |-> 1]>>
+],
+[
+ _TEAction |-> [
+   position |-> 7,
+   name |-> "Steps",
+   location |-> "line 166, col 5 to line 172, col 28 of module IBFT1_0"
+ ],
+ decision |-> (2 :> "None" @@ 3 :> "None" @@ 4 :> "None"),
+ messages |-> {[type |-> "PRE-PREPARE", view_num |-> 1, cmd |-> "A", from |-> 1], [type |-> "PRE-PREPARE", view_num |-> 1, cmd |-> "B", from |-> 1], [type |-> "PRE-PREPARE", view_num |-> 2, cmd |-> "B", from |-> 2], [type |-> "PREPARE", view_num |-> 1, cmd |-> "A", from |-> 2], [type |-> "PREPARE", view_num |-> 1, cmd |-> "A", from |-> 3], [type |-> "PREPARE", view_num |-> 2, cmd |-> "B", from |-> 2]},
+ processState |-> <<[view_num |-> 1], [view_num |-> 2], [view_num |-> 1], [view_num |-> 1]>>
+],
+[
+ _TEAction |-> [
+   position |-> 8,
+   name |-> "Steps",
+   location |-> "line 166, col 5 to line 172, col 28 of module IBFT1_0"
+ ],
+ decision |-> (2 :> "None" @@ 3 :> "None" @@ 4 :> "None"),
+ messages |-> {[type |-> "PRE-PREPARE", view_num |-> 1, cmd |-> "A", from |-> 1], [type |-> "PRE-PREPARE", view_num |-> 1, cmd |-> "B", from |-> 1], [type |-> "PRE-PREPARE", view_num |-> 2, cmd |-> "B", from |-> 2], [type |-> "PREPARE", view_num |-> 1, cmd |-> "A", from |-> 2], [type |-> "PREPARE", view_num |-> 1, cmd |-> "A", from |-> 3], [type |-> "PREPARE", view_num |-> 2, cmd |-> "B", from |-> 2]},
+ processState |-> <<[view_num |-> 1], [view_num |-> 2], [view_num |-> 2], [view_num |-> 1]>>
+],
+[
+ _TEAction |-> [
+   position |-> 9,
+   name |-> "Steps",
+   location |-> "line 166, col 5 to line 172, col 28 of module IBFT1_0"
+ ],
+ decision |-> (2 :> "None" @@ 3 :> "None" @@ 4 :> "None"),
+ messages |-> {[type |-> "PRE-PREPARE", view_num |-> 1, cmd |-> "A", from |-> 1], [type |-> "PRE-PREPARE", view_num |-> 1, cmd |-> "B", from |-> 1], [type |-> "PRE-PREPARE", view_num |-> 2, cmd |-> "B", from |-> 2], [type |-> "PREPARE", view_num |-> 1, cmd |-> "A", from |-> 2], [type |-> "PREPARE", view_num |-> 1, cmd |-> "A", from |-> 3], [type |-> "PREPARE", view_num |-> 2, cmd |-> "B", from |-> 2], [type |-> "PREPARE", view_num |-> 2, cmd |-> "B", from |-> 3]},
+ processState |-> <<[view_num |-> 1], [view_num |-> 2], [view_num |-> 2], [view_num |-> 1]>>
+],
+[
+ _TEAction |-> [
+   position |-> 10,
+   name |-> "Steps",
+   location |-> "line 166, col 5 to line 172, col 28 of module IBFT1_0"
+ ],
+ decision |-> (2 :> "None" @@ 3 :> "None" @@ 4 :> "None"),
+ messages |-> {[type |-> "PRE-PREPARE", view_num |-> 1, cmd |-> "A", from |-> 1], [type |-> "PRE-PREPARE", view_num |-> 1, cmd |-> "B", from |-> 1], [type |-> "PRE-PREPARE", view_num |-> 2, cmd |-> "B", from |-> 2], [type |-> "PREPARE", view_num |-> 1, cmd |-> "A", from |-> 2], [type |-> "PREPARE", view_num |-> 1, cmd |-> "A", from |-> 3], [type |-> "PREPARE", view_num |-> 1, cmd |-> "A", from |-> 4], [type |-> "PREPARE", view_num |-> 2, cmd |-> "B", from |-> 2], [type |-> "PREPARE", view_num |-> 2, cmd |-> "B", from |-> 3]},
+ processState |-> <<[view_num |-> 1], [view_num |-> 2], [view_num |-> 2], [view_num |-> 1]>>
+],
+[
+ _TEAction |-> [
+   position |-> 11,
+   name |-> "Steps",
+   location |-> "line 166, col 5 to line 172, col 28 of module IBFT1_0"
+ ],
+ decision |-> (2 :> "None" @@ 3 :> "None" @@ 4 :> "None"),
+ messages |-> {[type |-> "PRE-PREPARE", view_num |-> 1, cmd |-> "A", from |-> 1], [type |-> "PRE-PREPARE", view_num |-> 1, cmd |-> "B", from |-> 1], [type |-> "PRE-PREPARE", view_num |-> 2, cmd |-> "B", from |-> 2], [type |-> "PREPARE", view_num |-> 1, cmd |-> "A", from |-> 2], [type |-> "PREPARE", view_num |-> 1, cmd |-> "A", from |-> 3], [type |-> "PREPARE", view_num |-> 1, cmd |-> "A", from |-> 4], [type |-> "PREPARE", view_num |-> 2, cmd |-> "B", from |-> 2], [type |-> "PREPARE", view_num |-> 2, cmd |-> "B", from |-> 3], [type |-> "COMMIT", view_num |-> 1, cmd |-> "A", from |-> 2]},
+ processState |-> <<[view_num |-> 1], [view_num |-> 2], [view_num |-> 2], [view_num |-> 1]>>
+],
+[
+ _TEAction |-> [
+   position |-> 12,
+   name |-> "Steps",
+   location |-> "line 166, col 5 to line 172, col 28 of module IBFT1_0"
+ ],
+ decision |-> (2 :> "None" @@ 3 :> "None" @@ 4 :> "None"),
+ messages |-> {[type |-> "PRE-PREPARE", view_num |-> 1, cmd |-> "A", from |-> 1], [type |-> "PRE-PREPARE", view_num |-> 1, cmd |-> "B", from |-> 1], [type |-> "PRE-PREPARE", view_num |-> 2, cmd |-> "B", from |-> 2], [type |-> "PREPARE", view_num |-> 1, cmd |-> "A", from |-> 2], [type |-> "PREPARE", view_num |-> 1, cmd |-> "A", from |-> 3], [type |-> "PREPARE", view_num |-> 1, cmd |-> "A", from |-> 4], [type |-> "PREPARE", view_num |-> 2, cmd |-> "B", from |-> 2], [type |-> "PREPARE", view_num |-> 2, cmd |-> "B", from |-> 3], [type |-> "COMMIT", view_num |-> 1, cmd |-> "A", from |-> 2], [type |-> "COMMIT", view_num |-> 1, cmd |-> "A", from |-> 3]},
+ processState |-> <<[view_num |-> 1], [view_num |-> 2], [view_num |-> 2], [view_num |-> 1]>>
+],
+[
+ _TEAction |-> [
+   position |-> 13,
+   name |-> "Steps",
+   location |-> "line 166, col 5 to line 172, col 28 of module IBFT1_0"
+ ],
+ decision |-> (2 :> "None" @@ 3 :> "None" @@ 4 :> "None"),
+ messages |-> {[type |-> "PRE-PREPARE", view_num |-> 1, cmd |-> "A", from |-> 1], [type |-> "PRE-PREPARE", view_num |-> 1, cmd |-> "B", from |-> 1], [type |-> "PRE-PREPARE", view_num |-> 2, cmd |-> "B", from |-> 2], [type |-> "PREPARE", view_num |-> 1, cmd |-> "A", from |-> 2], [type |-> "PREPARE", view_num |-> 1, cmd |-> "A", from |-> 3], [type |-> "PREPARE", view_num |-> 1, cmd |-> "A", from |-> 4], [type |-> "PREPARE", view_num |-> 2, cmd |-> "B", from |-> 2], [type |-> "PREPARE", view_num |-> 2, cmd |-> "B", from |-> 3], [type |-> "COMMIT", view_num |-> 1, cmd |-> "A", from |-> 2], [type |-> "COMMIT", view_num |-> 1, cmd |-> "A", from |-> 3]},
+ processState |-> <<[view_num |-> 1], [view_num |-> 2], [view_num |-> 2], [view_num |-> 2]>>
+],
+[
+ _TEAction |-> [
+   position |-> 14,
+   name |-> "Steps",
+   location |-> "line 166, col 5 to line 172, col 28 of module IBFT1_0"
+ ],
+ decision |-> (2 :> "None" @@ 3 :> "None" @@ 4 :> "None"),
+ messages |-> {[type |-> "PRE-PREPARE", view_num |-> 1, cmd |-> "A", from |-> 1], [type |-> "PRE-PREPARE", view_num |-> 1, cmd |-> "B", from |-> 1], [type |-> "PRE-PREPARE", view_num |-> 2, cmd |-> "B", from |-> 2], [type |-> "PREPARE", view_num |-> 1, cmd |-> "A", from |-> 2], [type |-> "PREPARE", view_num |-> 1, cmd |-> "A", from |-> 3], [type |-> "PREPARE", view_num |-> 1, cmd |-> "A", from |-> 4], [type |-> "PREPARE", view_num |-> 2, cmd |-> "B", from |-> 2], [type |-> "PREPARE", view_num |-> 2, cmd |-> "B", from |-> 3], [type |-> "PREPARE", view_num |-> 2, cmd |-> "B", from |-> 4], [type |-> "COMMIT", view_num |-> 1, cmd |-> "A", from |-> 2], [type |-> "COMMIT", view_num |-> 1, cmd |-> "A", from |-> 3]},
+ processState |-> <<[view_num |-> 1], [view_num |-> 2], [view_num |-> 2], [view_num |-> 2]>>
+],
+[
+ _TEAction |-> [
+   position |-> 15,
+   name |-> "Steps",
+   location |-> "line 166, col 5 to line 172, col 28 of module IBFT1_0"
+ ],
+ decision |-> (2 :> "None" @@ 3 :> "None" @@ 4 :> "None"),
+ messages |-> {[type |-> "PRE-PREPARE", view_num |-> 1, cmd |-> "A", from |-> 1], [type |-> "PRE-PREPARE", view_num |-> 1, cmd |-> "B", from |-> 1], [type |-> "PRE-PREPARE", view_num |-> 2, cmd |-> "B", from |-> 2], [type |-> "PREPARE", view_num |-> 1, cmd |-> "A", from |-> 2], [type |-> "PREPARE", view_num |-> 1, cmd |-> "A", from |-> 3], [type |-> "PREPARE", view_num |-> 1, cmd |-> "A", from |-> 4], [type |-> "PREPARE", view_num |-> 2, cmd |-> "B", from |-> 2], [type |-> "PREPARE", view_num |-> 2, cmd |-> "B", from |-> 3], [type |-> "PREPARE", view_num |-> 2, cmd |-> "B", from |-> 4], [type |-> "COMMIT", view_num |-> 1, cmd |-> "A", from |-> 2], [type |-> "COMMIT", view_num |-> 1, cmd |-> "A", from |-> 3], [type |-> "COMMIT", view_num |-> 2, cmd |-> "B", from |-> 2]},
+ processState |-> <<[view_num |-> 1], [view_num |-> 2], [view_num |-> 2], [view_num |-> 2]>>
+],
+[
+ _TEAction |-> [
+   position |-> 16,
+   name |-> "Steps",
+   location |-> "line 166, col 5 to line 172, col 28 of module IBFT1_0"
+ ],
+ decision |-> (2 :> "None" @@ 3 :> "None" @@ 4 :> "None"),
+ messages |-> {[type |-> "PRE-PREPARE", view_num |-> 1, cmd |-> "A", from |-> 1], [type |-> "PRE-PREPARE", view_num |-> 1, cmd |-> "B", from |-> 1], [type |-> "PRE-PREPARE", view_num |-> 2, cmd |-> "B", from |-> 2], [type |-> "PREPARE", view_num |-> 1, cmd |-> "A", from |-> 2], [type |-> "PREPARE", view_num |-> 1, cmd |-> "A", from |-> 3], [type |-> "PREPARE", view_num |-> 1, cmd |-> "A", from |-> 4], [type |-> "PREPARE", view_num |-> 2, cmd |-> "B", from |-> 2], [type |-> "PREPARE", view_num |-> 2, cmd |-> "B", from |-> 3], [type |-> "PREPARE", view_num |-> 2, cmd |-> "B", from |-> 4], [type |-> "COMMIT", view_num |-> 1, cmd |-> "A", from |-> 2], [type |-> "COMMIT", view_num |-> 1, cmd |-> "A", from |-> 3], [type |-> "COMMIT", view_num |-> 2, cmd |-> "B", from |-> 2], [type |-> "COMMIT", view_num |-> 2, cmd |-> "B", from |-> 3]},
+ processState |-> <<[view_num |-> 1], [view_num |-> 2], [view_num |-> 2], [view_num |-> 2]>>
+],
+[
+ _TEAction |-> [
+   position |-> 17,
+   name |-> "Steps",
+   location |-> "line 166, col 5 to line 172, col 28 of module IBFT1_0"
+ ],
+ decision |-> (2 :> "None" @@ 3 :> "None" @@ 4 :> "None"),
+ messages |-> {[type |-> "PRE-PREPARE", view_num |-> 1, cmd |-> "A", from |-> 1], [type |-> "PRE-PREPARE", view_num |-> 1, cmd |-> "B", from |-> 1], [type |-> "PRE-PREPARE", view_num |-> 2, cmd |-> "B", from |-> 2], [type |-> "PREPARE", view_num |-> 1, cmd |-> "A", from |-> 2], [type |-> "PREPARE", view_num |-> 1, cmd |-> "A", from |-> 3], [type |-> "PREPARE", view_num |-> 1, cmd |-> "A", from |-> 4], [type |-> "PREPARE", view_num |-> 2, cmd |-> "B", from |-> 2], [type |-> "PREPARE", view_num |-> 2, cmd |-> "B", from |-> 3], [type |-> "PREPARE", view_num |-> 2, cmd |-> "B", from |-> 4], [type |-> "COMMIT", view_num |-> 1, cmd |-> "A", from |-> 2], [type |-> "COMMIT", view_num |-> 1, cmd |-> "A", from |-> 3], [type |-> "COMMIT", view_num |-> 1, cmd |-> "A", from |-> 4], [type |-> "COMMIT", view_num |-> 2, cmd |-> "B", from |-> 2], [type |-> "COMMIT", view_num |-> 2, cmd |-> "B", from |-> 3]},
+ processState |-> <<[view_num |-> 1], [view_num |-> 2], [view_num |-> 2], [view_num |-> 2]>>
+],
+[
+ _TEAction |-> [
+   position |-> 18,
+   name |-> "Steps",
+   location |-> "line 166, col 5 to line 172, col 28 of module IBFT1_0"
+ ],
+ decision |-> (2 :> "None" @@ 3 :> "A" @@ 4 :> "None"),
+ messages |-> {[type |-> "PRE-PREPARE", view_num |-> 1, cmd |-> "A", from |-> 1], [type |-> "PRE-PREPARE", view_num |-> 1, cmd |-> "B", from |-> 1], [type |-> "PRE-PREPARE", view_num |-> 2, cmd |-> "B", from |-> 2], [type |-> "PREPARE", view_num |-> 1, cmd |-> "A", from |-> 2], [type |-> "PREPARE", view_num |-> 1, cmd |-> "A", from |-> 3], [type |-> "PREPARE", view_num |-> 1, cmd |-> "A", from |-> 4], [type |-> "PREPARE", view_num |-> 2, cmd |-> "B", from |-> 2], [type |-> "PREPARE", view_num |-> 2, cmd |-> "B", from |-> 3], [type |-> "PREPARE", view_num |-> 2, cmd |-> "B", from |-> 4], [type |-> "COMMIT", view_num |-> 1, cmd |-> "A", from |-> 2], [type |-> "COMMIT", view_num |-> 1, cmd |-> "A", from |-> 3], [type |-> "COMMIT", view_num |-> 1, cmd |-> "A", from |-> 4], [type |-> "COMMIT", view_num |-> 2, cmd |-> "B", from |-> 2], [type |-> "COMMIT", view_num |-> 2, cmd |-> "B", from |-> 3]},
+ processState |-> <<[view_num |-> 1], [view_num |-> 2], [view_num |-> 2], [view_num |-> 2]>>
+],
+[
+ _TEAction |-> [
+   position |-> 19,
+   name |-> "Steps",
+   location |-> "line 166, col 5 to line 172, col 28 of module IBFT1_0"
+ ],
+ decision |-> (2 :> "None" @@ 3 :> "A" @@ 4 :> "None"),
+ messages |-> {[type |-> "PRE-PREPARE", view_num |-> 1, cmd |-> "A", from |-> 1], [type |-> "PRE-PREPARE", view_num |-> 1, cmd |-> "B", from |-> 1], [type |-> "PRE-PREPARE", view_num |-> 2, cmd |-> "B", from |-> 2], [type |-> "PREPARE", view_num |-> 1, cmd |-> "A", from |-> 2], [type |-> "PREPARE", view_num |-> 1, cmd |-> "A", from |-> 3], [type |-> "PREPARE", view_num |-> 1, cmd |-> "A", from |-> 4], [type |-> "PREPARE", view_num |-> 2, cmd |-> "B", from |-> 2], [type |-> "PREPARE", view_num |-> 2, cmd |-> "B", from |-> 3], [type |-> "PREPARE", view_num |-> 2, cmd |-> "B", from |-> 4], [type |-> "COMMIT", view_num |-> 1, cmd |-> "A", from |-> 2], [type |-> "COMMIT", view_num |-> 1, cmd |-> "A", from |-> 3], [type |-> "COMMIT", view_num |-> 1, cmd |-> "A", from |-> 4], [type |-> "COMMIT", view_num |-> 2, cmd |-> "B", from |-> 2], [type |-> "COMMIT", view_num |-> 2, cmd |-> "B", from |-> 3], [type |-> "COMMIT", view_num |-> 2, cmd |-> "B", from |-> 4]},
+ processState |-> <<[view_num |-> 1], [view_num |-> 2], [view_num |-> 2], [view_num |-> 2]>>
+],
+[
+ _TEAction |-> [
+   position |-> 20,
+   name |-> "Steps",
+   location |-> "line 166, col 5 to line 172, col 28 of module IBFT1_0"
+ ],
+ decision |-> (2 :> "B" @@ 3 :> "A" @@ 4 :> "None"),
+ messages |-> {[type |-> "PRE-PREPARE", view_num |-> 1, cmd |-> "A", from |-> 1], [type |-> "PRE-PREPARE", view_num |-> 1, cmd |-> "B", from |-> 1], [type |-> "PRE-PREPARE", view_num |-> 2, cmd |-> "B", from |-> 2], [type |-> "PREPARE", view_num |-> 1, cmd |-> "A", from |-> 2], [type |-> "PREPARE", view_num |-> 1, cmd |-> "A", from |-> 3], [type |-> "PREPARE", view_num |-> 1, cmd |-> "A", from |-> 4], [type |-> "PREPARE", view_num |-> 2, cmd |-> "B", from |-> 2], [type |-> "PREPARE", view_num |-> 2, cmd |-> "B", from |-> 3], [type |-> "PREPARE", view_num |-> 2, cmd |-> "B", from |-> 4], [type |-> "COMMIT", view_num |-> 1, cmd |-> "A", from |-> 2], [type |-> "COMMIT", view_num |-> 1, cmd |-> "A", from |-> 3], [type |-> "COMMIT", view_num |-> 1, cmd |-> "A", from |-> 4], [type |-> "COMMIT", view_num |-> 2, cmd |-> "B", from |-> 2], [type |-> "COMMIT", view_num |-> 2, cmd |-> "B", from |-> 3], [type |-> "COMMIT", view_num |-> 2, cmd |-> "B", from |-> 4]},
+ processState |-> <<[view_num |-> 1], [view_num |-> 2], [view_num |-> 2], [view_num |-> 2]>>
+]
+>>
